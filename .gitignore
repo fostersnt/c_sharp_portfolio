@@ -1,0 +1,56 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Rider specific files
+.idea/
+
+# VS Code specific files
+.vscode/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# IIS Express
+IISExpress/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Core configuration
+appsettings*.json
+secrets.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Others
+*.dbmdl
+*.db
+*.suo
+*.user
+*.cache
+*.aspnet
+*.vs
+*.vscode
+*.code-workspace

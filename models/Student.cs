@@ -19,6 +19,7 @@ namespace students_api.models
 
         [Required(ErrorMessage = "Class is a required field")]
         [StringLength(30, ErrorMessage = "Class should be between 1 and 30 characters")]
-        public String currentClass { get; set; }
+        public int? AvailableClassId { get; set; }
+        public AvailableClass? currentClass { get; set; }
     }
 }

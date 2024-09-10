@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using students_api.data;
 using students_api.models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,41 +12,28 @@ namespace students_api.Controllers
     [ApiController]
     public class StudentController : ControllerBase
     {
+        private readonly ApplicationDBContext _applicationDBContext;
+
         // GET: api/<ValuesController>
+        public StudentController(ApplicationDBContext applicationDBContext)
+        {
+            _applicationDBContext = applicationDBContext;
+        }
+        
         [HttpGet]
-        public string Get()
+        public IActionResult GetAll()
         {
-            Student student = new Student();
-             student.age = 23;
-             student.name = "Abigail";
-             student.id = 1;
-
-            return student.name;
+            var availableClasses = _applicationDBContext.availableClasses.ToList();
+            
+            return Ok(availableClasses);
         }
 
-        // GET api/<ValuesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult GetById([FromRoute] int id)
         {
-            return "value";
+            var availableClass = _applicationDBContext.availableClasses.Find(id);
+            return Ok(availableClass);
         }
 
-        // POST api/<ValuesController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

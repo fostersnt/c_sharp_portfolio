@@ -5,7 +5,8 @@ using students_api.models;
 
 namespace students_api.Controllers
 {
-    [Route("api/[controller]")]
+    // [Route("api/[controller]")]
+    [Route("api/student")]
     [ApiController]
     public class StudentController : ControllerBase
     {

@@ -29,11 +29,17 @@ namespace students_api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public IActionResult GetById(int id)
         {
             var availableClass = _applicationDBContext.availableClasses.Find(id);
             return Ok(availableClass);
         }
+
+        // public IActionResult GetById([FromRoute] int id)
+        // {
+        //     var availableClass = _applicationDBContext.availableClasses.Find(id);
+        //     return Ok(id);
+        // }
 
     }
 }

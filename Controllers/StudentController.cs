@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using students_api.models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,9 +11,14 @@ namespace students_api.Controllers
     {
         // GET: api/<ValuesController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public string Get()
         {
-            return new string[] { "value1", "value2" };
+            Student student = new Student();
+             student.age = 23;
+             student.name = "Abigail";
+             student.id = 1;
+
+            return student.name;
         }
 
         // GET api/<ValuesController>/5

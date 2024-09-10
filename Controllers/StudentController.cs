@@ -19,20 +19,35 @@ namespace students_api.Controllers
         {
             _applicationDBContext = applicationDBContext;
         }
-        
+
         [HttpGet]
         public IActionResult GetAll()
         {
             var availableClasses = _applicationDBContext.availableClasses.ToList();
-            
-            return Ok(availableClasses);
+
+            if (availableClasses.Count < 1)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(availableClasses);
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var availableClass = _applicationDBContext.availableClasses.Find(id);
-            return Ok(availableClass);
+
+            if (availableClass == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(availableClass);
+            }
         }
 
         // public IActionResult GetById([FromRoute] int id)

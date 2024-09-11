@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using students_api.data;
+using students_api.Mapper;
 using students_api.models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -23,30 +24,30 @@ namespace students_api.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var availableClasses = _applicationDBContext.availableClasses.ToList();
+            var students = _applicationDBContext.students.ToList().Select(s => s.ToDTO());
 
-            if (availableClasses.Count < 1)
+            if (students == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(availableClasses);
+                return Ok(students);
             }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var availableClass = _applicationDBContext.availableClasses.Find(id);
+            var student = _applicationDBContext.students.Find(id).ToDTO();
 
-            if (availableClass == null)
+            if (student == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(availableClass);
+                return Ok(student);
             }
         }
 

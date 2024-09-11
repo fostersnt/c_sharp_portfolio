@@ -9,10 +9,10 @@ namespace students_api.DTO.student
     {
         public int id { get; set; }
 
-        public String name { get; set; }
+        public string name { get; set; }
 
         public int age { get; set; }
 
-        public String status { get; set; }
+        public string status { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace students_api.Mapper
 {
     public static class StudentMapper
     {
+        //Extension method for student class
         public static StudentDto ToDTO(this Student student)
         {
             return new StudentDto

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using students_api.DTO.student;
+using students_api.DTO.studentDto;
 using students_api.models;
 
 namespace students_api.Mapper;
@@ -10,9 +10,9 @@ namespace students_api.Mapper;
     public static class StudentMapper
     {
         //Extension method for student class
-        public static StudentDto ToDTO(this Student student)
+        public static StudentResponseDto ResponseDto(this Student student)
         {
-            return new StudentDto
+            return new StudentResponseDto
             {
                 id = student.id,
                 name = student.name,
@@ -21,5 +21,16 @@ namespace students_api.Mapper;
             };
 
         }
+
+    public static Student RequestDto(this StudentRequestDto studentRequestDto)
+    {
+        return new Student
+        {
+            name = studentRequestDto.name,
+            age = studentRequestDto.age,
+            status = studentRequestDto.status
+        };
+
     }
+}
 // }

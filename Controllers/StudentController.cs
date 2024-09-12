@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using students_api.data;
+using students_api.DTO.studentDto;
 using students_api.Mapper;
 using students_api.models;
 
@@ -23,7 +24,7 @@ namespace students_api.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var students = _applicationDBContext.students.ToList().Select(s => s.ToDTO());
+            var students = _applicationDBContext.students.ToList().Select(s => s.ResponseDto());
 
             if (students == null)
             {
@@ -38,7 +39,7 @@ namespace students_api.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var student = _applicationDBContext.students.Find(id).ToDTO();
+            var student = _applicationDBContext.students.Find(id).ResponseDto();
 
             if (student == null)
             {
@@ -50,11 +51,22 @@ namespace students_api.Controllers
             }
         }
 
-        // public IActionResult GetById([FromRoute] int id)
-        // {
-        //     var availableClass = _applicationDBContext.availableClasses.Find(id);
-        //     return Ok(id);
-        // }
+        [HttpPost]
+        public IActionResult PostStudent([FromBody] StudentRequestDto student)
+        {
+            var newStudent = student.RequestDto();
+
+            if (student == null)
+            {
+                return BadRequest("Student data cannot be empty");
+            }
+            else
+            {
+                _applicationDBContext.students.Add(newStudent);
+                _applicationDBContext.SaveChanges();
+                return Ok(student);
+            }
+        }
 
     }
 }

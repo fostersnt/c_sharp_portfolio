@@ -36,7 +36,7 @@ namespace students_api.Migrations
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     age = table.Column<int>(type: "int", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AvailableClassId = table.Column<int>(type: "int", maxLength: 30, nullable: false)
+                    AvailableClassId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,8 +45,7 @@ namespace students_api.Migrations
                         name: "FK_students_availableClasses_AvailableClassId",
                         column: x => x.AvailableClassId,
                         principalTable: "availableClasses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

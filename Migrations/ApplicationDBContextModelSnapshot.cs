@@ -57,8 +57,6 @@ namespace students_api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int?>("AvailableClassId")
-                        .IsRequired()
-                        .HasMaxLength(30)
                         .HasColumnType("int");
 
                     b.Property<int>("age")
@@ -83,9 +81,7 @@ namespace students_api.Migrations
                 {
                     b.HasOne("students_api.models.AvailableClass", "currentClass")
                         .WithMany("Students")
-                        .HasForeignKey("AvailableClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AvailableClassId");
 
                     b.Navigation("currentClass");
                 });

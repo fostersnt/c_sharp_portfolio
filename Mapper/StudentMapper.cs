@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using students_api.DTO.student;
 using students_api.models;
 
-namespace students_api.Mapper
-{
+namespace students_api.Mapper;
+// {
     public static class StudentMapper
     {
         //Extension method for student class
@@ -22,4 +22,4 @@ namespace students_api.Mapper
 
         }
     }
-}
+// }

@@ -89,5 +89,20 @@ namespace students_api.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public IActionResult DeleteStudent([FromRoute] int id) { 
+            var student = _applicationDBContext.students.First(s => s.id == id);
+            if (student == null) {
+                return NotFound(id);
+            }
+            else
+            {
+                _applicationDBContext.students.Remove(student);
+                _applicationDBContext.SaveChanges();
+                return Ok("Student has been deleted successfully");
+            }
+        }
+
     }
 }

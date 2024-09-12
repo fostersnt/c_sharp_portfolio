@@ -19,7 +19,6 @@ namespace students_api.Mapper;
                 age = student.age,
                 status = student.status
             };
-
         }
 
     public static Student RequestDto(this StudentRequestDto studentRequestDto)
@@ -30,7 +29,6 @@ namespace students_api.Mapper;
             age = studentRequestDto.age,
             status = studentRequestDto.status
         };
-
     }
 
     public static Student UpdateDto(this StudentUpdateDto studentUpdateDto)
@@ -41,7 +39,6 @@ namespace students_api.Mapper;
             age = studentUpdateDto.age,
             status = studentUpdateDto.status
         };
-
     }
 }
 // }

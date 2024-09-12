@@ -24,4 +24,13 @@ namespace students_api.DTO.studentDto
 
         public string status { get; set; }
     }
+
+    public class StudentUpdateDto
+    {
+        public string name { get; set; }
+
+        public int age { get; set; }
+
+        public string status { get; set; }
+    }
 }

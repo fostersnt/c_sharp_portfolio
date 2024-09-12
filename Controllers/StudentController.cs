@@ -52,6 +52,7 @@ namespace students_api.Controllers
         }
 
         [HttpPost]
+        [Route("create")]
         public IActionResult PostStudent([FromBody] StudentRequestDto student)
         {
             var newStudent = student.RequestDto();
@@ -65,6 +66,26 @@ namespace students_api.Controllers
                 _applicationDBContext.students.Add(newStudent);
                 _applicationDBContext.SaveChanges();
                 return Ok(student);
+            }
+        }
+
+        [HttpPut]
+        [Route("update/{id}")]
+        public IActionResult updateStudent([FromRoute] int id, [FromBody] StudentUpdateDto studentUpdateDto)
+        {
+            var student = _applicationDBContext.students.FirstOrDefault(s => s.id == id);
+            if (student == null) { 
+                return NotFound(studentUpdateDto);
+            }
+            else
+            {
+                student.age =  studentUpdateDto.age;
+                student.name = studentUpdateDto.name;
+                student.status = studentUpdateDto.status;
+
+                _applicationDBContext.SaveChanges();
+
+                return Ok(studentUpdateDto);
             }
         }
 

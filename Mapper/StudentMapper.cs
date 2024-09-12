@@ -32,5 +32,16 @@ namespace students_api.Mapper;
         };
 
     }
+
+    public static Student UpdateDto(this StudentUpdateDto studentUpdateDto)
+    {
+        return new Student
+        {
+            name = studentUpdateDto.name,
+            age = studentUpdateDto.age,
+            status = studentUpdateDto.status
+        };
+
+    }
 }
 // }

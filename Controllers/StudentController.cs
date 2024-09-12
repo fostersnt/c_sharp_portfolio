@@ -15,7 +15,6 @@ namespace students_api.Controllers
     {
         private readonly ApplicationDBContext _applicationDBContext;
 
-        // GET: api/<ValuesController>
         public StudentController(ApplicationDBContext applicationDBContext)
         {
             _applicationDBContext = applicationDBContext;

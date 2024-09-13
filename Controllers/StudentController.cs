@@ -23,10 +23,12 @@ namespace students_api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try {
-                var students = _applicationDBContext.students.ToList().Select(s => s.ResponseDto());
+                var students = await _applicationDBContext.students.ToListAsync();
+
+                var finalStudents = students.Select(s => s.ResponseDto());
 
                 if (students == null)
                 {
@@ -34,7 +36,7 @@ namespace students_api.Controllers
                 }
                 else
                 {
-                    return Ok(ApiResponseStructure.apiResponse(true, "Students found", students));
+                    return Ok(ApiResponseStructure.apiResponse(true, "Students found", finalStudents));
                 }
             } catch (Exception ex) { 
                 return BadRequest(ApiResponseStructure.apiResponse(false, ex.Message.ToString(), null));
@@ -42,10 +44,10 @@ namespace students_api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             try {
-                var student = _applicationDBContext.students.Find(id).ResponseDto();
+                var student = await _applicationDBContext.students.FindAsync(id);
 
                 if (student == null)
                 {
@@ -53,7 +55,9 @@ namespace students_api.Controllers
                 }
                 else
                 {
-                    return Ok(ApiResponseStructure.apiResponse(true, "Student available", student));
+                    var currentStudent = student.ResponseDto();
+
+                    return Ok(ApiResponseStructure.apiResponse(true, "Student available", currentStudent));
                 }
             }
             catch(Exception ex)
@@ -64,7 +68,7 @@ namespace students_api.Controllers
 
         [HttpPost]
         [Route("create")]
-        public IActionResult PostStudent([FromBody] StudentRequestDto student)
+        public async Task<IActionResult> PostStudent([FromBody] StudentRequestDto student)
         {
             var newStudent = student.RequestDto();
 
@@ -74,18 +78,21 @@ namespace students_api.Controllers
             }
             else
             {
-                _applicationDBContext.students.Add(newStudent);
-                _applicationDBContext.SaveChanges();
-                return Ok(ApiResponseStructure.apiResponse(true, "Student created successfully", student));
+                var createdStudent = await _applicationDBContext.students.AddAsync(newStudent);
+              await _applicationDBContext.SaveChangesAsync();
+
+                var newData = new StudentResponseDto {id = createdStudent.Entity.id, age = student.age, name = student.name, status = student.status };
+
+                return Ok(ApiResponseStructure.apiResponse(true, "Student created successfully", newData));
             }
         }
 
         [HttpPut]
         [Route("update/{id}")]
-        public IActionResult updateStudent([FromRoute] int id, [FromBody] StudentUpdateDto studentUpdateDto)
+        public async Task<IActionResult> updateStudent([FromRoute] int id, [FromBody] StudentUpdateDto studentUpdateDto)
         {
             try {
-                var student = _applicationDBContext.students.Find(id);
+                var student = await _applicationDBContext.students.FindAsync(id);
 
                 if (student == null)
                 {
@@ -97,7 +104,7 @@ namespace students_api.Controllers
                     student.name = studentUpdateDto.name;
                     student.status = studentUpdateDto.status;
 
-                    _applicationDBContext.SaveChanges();
+                   await _applicationDBContext.SaveChangesAsync();
 
                     return Ok(ApiResponseStructure.apiResponse(true, "Student has been updated successfully", studentUpdateDto));
                 }
@@ -108,9 +115,9 @@ namespace students_api.Controllers
 
         [HttpDelete]
         [Route("delete/{id}")]
-        public IActionResult DeleteStudent([FromRoute] int id) {
+        public async Task<IActionResult> DeleteStudent([FromRoute] int id) {
             try {
-                var student = _applicationDBContext.students.Find(id);
+                var student = await _applicationDBContext.students.FindAsync(id);
 
                 if (student == null)
                 {
@@ -119,7 +126,7 @@ namespace students_api.Controllers
                 else
                 {
                     _applicationDBContext.students.Remove(student);
-                    _applicationDBContext.SaveChanges();
+                   await _applicationDBContext.SaveChangesAsync();
                     return Ok(ApiResponseStructure.apiDeleteResponse(true, "Student has been deleted successfully"));
                 }
             } catch(Exception ex) {

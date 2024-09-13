@@ -1,4 +1,5 @@
-﻿using CustomLibrary.models;
+﻿using CustomLibrary.interfaces;
+using CustomLibrary.models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using students_api.data;
@@ -16,31 +17,35 @@ namespace students_api.Controllers
     public class StudentController : ControllerBase
     {
         private readonly ApplicationDBContext _applicationDBContext;
+        private readonly IDatabaseCRUD<Student> _databaseCRUD;
 
-        public StudentController(ApplicationDBContext applicationDBContext)
+        public StudentController(ApplicationDBContext applicationDBContext, IDatabaseCRUD<Student> databaseCRUD)
         {
             _applicationDBContext = applicationDBContext;
+            _databaseCRUD = databaseCRUD;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try {
-                var students = await _applicationDBContext.students.ToListAsync();
+            var students = await _databaseCRUD.GetAllAsync();
 
-                var finalStudents = students.Select(s => s.ResponseDto());
+            //Filtering for only the needed fields of the student object
+            var finalStudents = students.Select(s => s.ResponseDto());
 
-                if (students == null)
-                {
-                    return NotFound(ApiResponseStructure.apiResponse(false, "Student cannot be found", null));
-                }
-                else
-                {
-                    return Ok(ApiResponseStructure.apiResponse(true, "Students found", finalStudents));
-                }
-            } catch (Exception ex) { 
-                return BadRequest(ApiResponseStructure.apiResponse(false, ex.Message.ToString(), null));
+
+            string message = "";
+
+            if (students == null)
+            {
+                message = "No students found";
             }
+            else
+            {
+                message = "Students found";
+            }
+
+            return Ok(ApiResponseStructure.apiResponse(true, message, finalStudents));
         }
 
         [HttpGet("{id}")]
@@ -51,7 +56,7 @@ namespace students_api.Controllers
 
                 if (student == null)
                 {
-                    return NotFound(ApiResponseStructure.apiResponse(false, "Student not found", null));
+                    return NotFound(ApiResponseStructure.apiResponse(true, "Student not found", null));
                 }
                 else
                 {

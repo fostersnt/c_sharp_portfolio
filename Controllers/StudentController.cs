@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CustomLibrary.models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using students_api.data;
 using students_api.DTO.studentDto;
@@ -24,30 +25,40 @@ namespace students_api.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var students = _applicationDBContext.students.ToList().Select(s => s.ResponseDto());
+            try {
+                var students = _applicationDBContext.students.ToList().Select(s => s.ResponseDto());
 
-            if (students == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(students);
+                if (students == null)
+                {
+                    return NotFound(ApiResponseStructure.apiResponse(false, "Student cannot be found", null));
+                }
+                else
+                {
+                    return Ok(ApiResponseStructure.apiResponse(true, "Students found", students));
+                }
+            } catch (Exception ex) { 
+                return BadRequest(ApiResponseStructure.apiResponse(false, ex.Message.ToString(), null));
             }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var student = _applicationDBContext.students.Find(id).ResponseDto();
+            try {
+                var student = _applicationDBContext.students.Find(id).ResponseDto();
 
-            if (student == null)
-            {
-                return NotFound();
+                if (student == null)
+                {
+                    return NotFound(ApiResponseStructure.apiResponse(false, "Student not found", null));
+                }
+                else
+                {
+                    return Ok(ApiResponseStructure.apiResponse(true, "Student available", student));
+                }
             }
-            else
+            catch(Exception ex)
             {
-                return Ok(student);
+                return BadRequest(ApiResponseStructure.apiResponse(false, ex.Message.ToString(), null));
             }
         }
 
@@ -59,13 +70,13 @@ namespace students_api.Controllers
 
             if (student == null)
             {
-                return BadRequest("Student data cannot be empty");
+                return BadRequest(ApiResponseStructure.apiResponse(false, "Student data cannot be empty", null));
             }
             else
             {
                 _applicationDBContext.students.Add(newStudent);
                 _applicationDBContext.SaveChanges();
-                return Ok(student);
+                return Ok(ApiResponseStructure.apiResponse(true, "Student created successfully", student));
             }
         }
 
@@ -73,34 +84,46 @@ namespace students_api.Controllers
         [Route("update/{id}")]
         public IActionResult updateStudent([FromRoute] int id, [FromBody] StudentUpdateDto studentUpdateDto)
         {
-            var student = _applicationDBContext.students.FirstOrDefault(s => s.id == id);
-            if (student == null) { 
-                return NotFound(studentUpdateDto);
-            }
-            else
-            {
-                student.age =  studentUpdateDto.age;
-                student.name = studentUpdateDto.name;
-                student.status = studentUpdateDto.status;
+            try {
+                var student = _applicationDBContext.students.Find(id);
 
-                _applicationDBContext.SaveChanges();
+                if (student == null)
+                {
+                    return Ok(ApiResponseStructure.apiResponse(false, $"Student with ID: {id} cannot be found", null));
+                }
+                else
+                {
+                    student.age = studentUpdateDto.age;
+                    student.name = studentUpdateDto.name;
+                    student.status = studentUpdateDto.status;
 
-                return Ok(studentUpdateDto);
+                    _applicationDBContext.SaveChanges();
+
+                    return Ok(ApiResponseStructure.apiResponse(true, "Student has been updated successfully", studentUpdateDto));
+                }
+            } catch (Exception ex) { 
+                return BadRequest(ApiResponseStructure.apiResponse(false, ex.Message.ToString(), null));
             }
         }
 
         [HttpDelete]
         [Route("delete/{id}")]
-        public IActionResult DeleteStudent([FromRoute] int id) { 
-            var student = _applicationDBContext.students.First(s => s.id == id);
-            if (student == null) {
-                return NotFound(id);
-            }
-            else
-            {
-                _applicationDBContext.students.Remove(student);
-                _applicationDBContext.SaveChanges();
-                return Ok("Student has been deleted successfully");
+        public IActionResult DeleteStudent([FromRoute] int id) {
+            try {
+                var student = _applicationDBContext.students.Find(id);
+
+                if (student == null)
+                {
+                    return Ok(ApiResponseStructure.apiDeleteResponse(false, $"Could not find student with ID: {id}"));
+                }
+                else
+                {
+                    _applicationDBContext.students.Remove(student);
+                    _applicationDBContext.SaveChanges();
+                    return Ok(ApiResponseStructure.apiDeleteResponse(true, "Student has been deleted successfully"));
+                }
+            } catch(Exception ex) {
+                return BadRequest(ApiResponseStructure.apiDeleteResponse(false, ex.Message.ToString().ToString()));
             }
         }
 
